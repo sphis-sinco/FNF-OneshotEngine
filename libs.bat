@@ -1,6 +1,6 @@
 haxelib install lime 7.9.0
 haxelib install openfl
-haxelib install flixel
+haxelib install flixel 5.9.0
 haxelib run lime setup flixel
 haxelib run lime setup
 haxelib install flixel-tools
@@ -18,4 +18,6 @@ haxelib install linc_luajit
 haxelib install actuate
 haxelib git extension-webm https://github.com/KadeDev/extension-webm
 lime rebuild extension-webm windows
+haxelib git jsonpatch https://github.com/EliteMasterEric/jsonpatch f9b83215acd586dc28754b4ae7f69d4c06c3b4d3
+haxelib git jsonpath https://github.com/EliteMasterEric/jsonpath 7a24193717b36393458c15c0435bb7c4470ecdda
 haxelib list
