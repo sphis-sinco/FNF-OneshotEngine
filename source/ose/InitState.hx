@@ -30,9 +30,8 @@ class InitState extends FlxState
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = difficulty;
 			PlayState.storyWeek = week;
-			LoadingState.loadAndSwitchState(new PlayState());
 		}
-		else
-			FlxG.switchState(initialState);
+
+		FlxG.switchState(initialState);
 	}
 }
