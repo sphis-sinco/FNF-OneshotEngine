@@ -1,3 +1,4 @@
+haxelib install hxcpp-debug-server
 haxelib install lime 7.9.0
 haxelib install openfl
 haxelib install flixel 5.9.0
