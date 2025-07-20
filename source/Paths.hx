@@ -1,5 +1,7 @@
 package;
 
+import sys.FileSystem;
+import sys.io.File;
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
@@ -9,28 +11,12 @@ class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 
-	static var currentLevel:String;
-
-	static public function setCurrentLevel(name:String)
-	{
-		currentLevel = name.toLowerCase();
-	}
+	static var ITalkedAboutYouAlready:Array<String> = [];
 
 	static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);
-
-		if (currentLevel != null)
-		{
-			var levelPath = getLibraryPathForce(file, currentLevel);
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-
-			levelPath = getLibraryPathForce(file, "shared");
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-		}
 
 		return getPreloadPath(file);
 	}
@@ -42,12 +28,30 @@ class Paths
 
 	inline static function getLibraryPathForce(file:String, library:String)
 	{
-		return '$library:assets/$library/$file';
+		return '$library:${getPreloadPath('$library/$file')}';
 	}
 
 	inline static function getPreloadPath(file:String)
 	{
-		return 'assets/$file';
+		final path = 'assets/$file';
+
+		if (!ITalkedAboutYouAlready.contains(path))
+		{
+			trace(path);
+			ITalkedAboutYouAlready.push('path');
+
+			if (!FileSystem.exists(path))
+			{
+				trace('Path no existance: $path');
+			}
+		}
+
+		if (!FileSystem.exists(path))
+		{
+			return null;
+		}
+
+		return path;
 	}
 
 	inline static public function file(file:String, type:AssetType = TEXT, ?library:String)
@@ -55,7 +59,7 @@ class Paths
 		return getPath(file, type, library);
 	}
 
-	inline static public function lua(key:String,?library:String)
+	inline static public function lua(key:String, ?library:String)
 	{
 		return getPath('data/$key.lua', TEXT, library);
 	}
@@ -98,20 +102,26 @@ class Paths
 	inline static public function voices(song:String)
 	{
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
-			switch (songLowercase) {
-				case 'dad-battle': songLowercase = 'dadbattle';
-				case 'philly-nice': songLowercase = 'philly';
-			}
+		switch (songLowercase)
+		{
+			case 'dad-battle':
+				songLowercase = 'dadbattle';
+			case 'philly-nice':
+				songLowercase = 'philly';
+		}
 		return 'songs:assets/songs/${songLowercase}/Voices.$SOUND_EXT';
 	}
 
 	inline static public function inst(song:String)
 	{
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
-			switch (songLowercase) {
-				case 'dad-battle': songLowercase = 'dadbattle';
-				case 'philly-nice': songLowercase = 'philly';
-			}
+		switch (songLowercase)
+		{
+			case 'dad-battle':
+				songLowercase = 'dadbattle';
+			case 'philly-nice':
+				songLowercase = 'philly';
+		}
 		return 'songs:assets/songs/${songLowercase}/Inst.$SOUND_EXT';
 	}
 

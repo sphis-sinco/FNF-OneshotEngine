@@ -21,6 +21,8 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
+		trace('New character(character: $character | isPlayer: $isPlayer)');
+
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;

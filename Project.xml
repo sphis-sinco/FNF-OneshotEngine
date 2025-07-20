@@ -51,8 +51,6 @@
 
 	<classpath name="source" />
 
-	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web" />
-	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web" />
 
 	<!-- <define name="PRELOAD_ALL" /> -->
 	<define name="PRELOAD_ALL" unless="web" />
@@ -72,6 +70,11 @@
 	<assets path="assets/songs" library="songs" exclude="*.mp3" unless="web" />
 	<assets path="assets/shared" library="shared" exclude="*.ogg" if="web" />
 	<assets path="assets/shared" library="shared" exclude="*.mp3" unless="web" />
+
+	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web" />
+	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web" />
+	<assets path="assets/shared" rename="assets" exclude="*.ogg" if="web" />
+	<assets path="assets/shared" rename="assets" exclude="*.mp3" unless="web" />
 
 	<!-- <assets path='example_mods' rename='mods' embed='false' /> -->
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />

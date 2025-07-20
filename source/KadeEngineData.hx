@@ -18,7 +18,7 @@ class KadeEngineData
 			FlxG.save.data.dfjk = false;
 
 		if (FlxG.save.data.accuracyDisplay == null || overrideSaves)
-			FlxG.save.data.accuracyDisplay = true;
+			FlxG.save.data.accuracyDisplay = false;
 
 		if (FlxG.save.data.offset == null || overrideSaves)
 			FlxG.save.data.offset = 0;
