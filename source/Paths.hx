@@ -38,7 +38,7 @@ class Paths
 		if (!ITalkedAboutYouAlready.contains(path))
 		{
 			trace(path);
-			ITalkedAboutYouAlready.push('path');
+			ITalkedAboutYouAlready.push(path);
 
 			if (!FileSystem.exists(path))
 			{
