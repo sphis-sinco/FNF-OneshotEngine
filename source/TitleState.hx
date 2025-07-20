@@ -305,9 +305,9 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
-				// Get current version of Kade Engine
+				// Get current version of Engine
 				
-				var http = new haxe.Http("https://raw.githubusercontent.com/KadeDev/Kade-Engine/master/version.downloadMe");
+				var http = new haxe.Http('https://raw.githubusercontent.com/sphis-sinco/FNF-OneshotEngine/refs/heads/main/version.downloadMe');
 				var returnedData:Array<String> = [];
 				
 				http.onData = function (data:String)
@@ -405,12 +405,12 @@ class TitleState extends MusicBeatState
 			// credTextShit.screenCenter();
 			case 5:
 				if (Main.watermarks)
-					createCoolText(['Kade Engine', 'by']);
+					createCoolText(['Oneshot engine', 'by']);
 				else
 					createCoolText(['In Partnership', 'with']);
 			case 7:
 				if (Main.watermarks)
-					addMoreText('KadeDeveloper');
+					addMoreText('Sinco');
 				else
 				{
 					addMoreText('Newgrounds');
