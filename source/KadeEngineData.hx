@@ -4,7 +4,7 @@ import flixel.FlxG;
 
 class KadeEngineData
 {
-	static var overrideSaves:Bool = #if !debug true #else false #end;
+	static var overrideSaves:Bool = #if !debug false #else true #end;
 
 	public static function initSave()
 	{

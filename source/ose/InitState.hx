@@ -43,7 +43,7 @@ class InitState extends FlxState
 			DiscordClient.shutdown();
 		});
 		#end
-		FlxG.save.bind('oneshotengine', 'Sinco');
+		FlxG.save.bind('OneShot', 'Sinco');
 		KadeEngineData.initSave();
 
 		// NGio.noLogin(APIStuff.API);
@@ -131,7 +131,11 @@ class InitState extends FlxState
 			PlayState.storyWeek = week;
 			trace('PLAYSTATE SHITZ done');
 
+			#if cpp
+			FlxG.switchState(new Caching());
+			#else
 			FlxG.switchState(new PlayState());
+			#end
 			#end
 		}
 		#end

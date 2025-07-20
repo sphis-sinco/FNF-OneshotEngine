@@ -37,7 +37,9 @@ class Paths
 
 		if (!ITalkedAboutYouAlready.contains(path))
 		{
-			trace('Got path: $path');
+			#if TALK_ABOUT_PATHS
+			trace('Looking for path: $path');
+			#end
 			ITalkedAboutYouAlready.push(path);
 
 			if (!FileSystem.exists(path))
