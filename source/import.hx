@@ -1,2 +1,2 @@
 import Paths;
-import OSE.*;
+import ose.*;
