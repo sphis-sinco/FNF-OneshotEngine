@@ -669,7 +669,7 @@ class PlayState extends MusicBeatState
 		OSEVer.scrollFactor.set();
 		OSEVer.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		OSEVer.y = FlxG.height - OSEVer.height;
-		add(OSEVer);
+		uiGroup.add(OSEVer);
 
 		var KEYBINDS:FlxText = new FlxText(0, FlxG.height, FlxG.width,
 			'Keybinds:'
@@ -681,7 +681,7 @@ class PlayState extends MusicBeatState
 		KEYBINDS.scrollFactor.set();
 		KEYBINDS.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		KEYBINDS.y = FlxG.height - KEYBINDS.height;
-		add(KEYBINDS);
+		uiGroup.add(KEYBINDS);
 	}
 
 	function set_songSpeed(value:Float):Float
