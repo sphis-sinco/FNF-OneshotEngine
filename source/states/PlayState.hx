@@ -1342,7 +1342,7 @@ class PlayState extends MusicBeatState
 		startingSong = false;
 
 		@:privateAccess
-		FlxG.sound.playMusic(inst._sound, 1, false);
+		FlxG.sound.playMusic(Paths.inst(SONG.song));
 		#if FLX_PITCH FlxG.sound.music.pitch = playbackRate; #end
 		FlxG.sound.music.onComplete = finishSong.bind();
 		vocals.play();
@@ -1392,22 +1392,21 @@ class PlayState extends MusicBeatState
 				songSpeed = ClientPrefs.getGameplaySetting('scrollspeed');
 		}
 
-		var songData = SONG;
-		Conductor.bpm = songData.bpm;
+		Conductor.bpm = SONG.bpm;
 
-		curSong = songData.song;
+		curSong = SONG.song;
 
 		vocals = new FlxSound();
 		opponentVocals = new FlxSound();
 		try
 		{
-			if (songData.needsVoices)
+			if (SONG.needsVoices)
 			{
-				var playerVocals = Paths.voices(songData.song,
+				var playerVocals = Paths.voices(SONG.song,
 					(boyfriend.vocalsFile == null || boyfriend.vocalsFile.length < 1) ? 'Player' : boyfriend.vocalsFile);
-				vocals.loadEmbedded(playerVocals != null ? playerVocals : Paths.voices(songData.song));
+				vocals.loadEmbedded(playerVocals != null ? playerVocals : Paths.voices(SONG.song));
 
-				var oppVocals = Paths.voices(songData.song, (dad.vocalsFile == null || dad.vocalsFile.length < 1) ? 'Opponent' : dad.vocalsFile);
+				var oppVocals = Paths.voices(SONG.song, (dad.vocalsFile == null || dad.vocalsFile.length < 1) ? 'Opponent' : dad.vocalsFile);
 				if (oppVocals != null && oppVocals.length > 0)
 					opponentVocals.loadEmbedded(oppVocals);
 			}
@@ -1426,7 +1425,7 @@ class PlayState extends MusicBeatState
 		inst = new FlxSound();
 		try
 		{
-			inst.loadEmbedded(Paths.inst(songData.song));
+			inst.loadEmbedded(Paths.inst(SONG.song));
 		}
 		catch (e:Dynamic)
 		{
@@ -1570,7 +1569,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		trace('["${SONG.song.toUpperCase()}" CHART INFO]: Ghost Notes Cleared: $ghostNotesCaught');
-		for (event in songData.events) // Event Notes
+		for (event in SONG.events) // Event Notes
 			for (i in 0...event[1].length)
 				makeEvent(event, i);
 
@@ -1889,7 +1888,16 @@ class PlayState extends MusicBeatState
 			Conductor.songPosition += elapsed * 1000 * playbackRate;
 			if (Conductor.songPosition >= Conductor.offset)
 			{
-				Conductor.songPosition = FlxMath.lerp(FlxG.sound.music.time + Conductor.offset, Conductor.songPosition, Math.exp(-elapsed * 5));
+				if (FlxG.sound.music == null) return;
+
+				try
+				{
+					Conductor.songPosition = FlxMath.lerp(FlxG.sound.music.time + Conductor.offset, Conductor.songPosition, Math.exp(-elapsed * 5));
+				}
+				catch (e)
+				{
+					Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
+				}
 				var timeDiff:Float = Math.abs((FlxG.sound.music.time + Conductor.offset) - Conductor.songPosition);
 				if (timeDiff > 1000 * playbackRate)
 					Conductor.songPosition = Conductor.songPosition + 1000 * FlxMath.signOf(timeDiff);
@@ -2998,7 +3006,7 @@ class PlayState extends MusicBeatState
 
 		// more accurate hit time for the ratings?
 		var lastTime:Float = Conductor.songPosition;
-		if (Conductor.songPosition >= 0)
+		if (Conductor.songPosition >= 0 && FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
 
 		// obtain notes that the player can hit
@@ -3618,9 +3626,16 @@ class PlayState extends MusicBeatState
 	public function playerDance():Void
 	{
 		var anim:String = boyfriend.getAnimationName();
-		if (boyfriend.holdTimer > Conductor.stepCrochet * (0.0011 #if FLX_PITCH / FlxG.sound.music.pitch #end) * boyfriend.singDuration
-			&& anim.startsWith('sing') && !anim.endsWith('miss'))
+		try
+		{
+			if (boyfriend.holdTimer > Conductor.stepCrochet * (0.0011 #if FLX_PITCH / FlxG.sound.music.pitch #end) * boyfriend.singDuration
+				&& anim.startsWith('sing') && !anim.endsWith('miss'))
+				boyfriend.dance();
+		}
+		catch (e)
+		{
 			boyfriend.dance();
+		}
 	}
 
 	override function sectionHit()

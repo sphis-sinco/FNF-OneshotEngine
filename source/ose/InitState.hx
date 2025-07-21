@@ -17,6 +17,23 @@ class InitState extends FlxState
 
 		trace('yo');
 
+		if (FlxG.sound.music == null)
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+
+		ClientPrefs.loadPrefs();
+		Language.reloadPhrases();
+
+		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
+		{
+			FlxG.fullscreen = FlxG.save.data.fullscreen;
+			// trace('LOADED FULLSCREEN SETTING!!');
+		}
+
+		if (FlxG.save.data.weekCompleted != null)
+		{
+			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
+		}
+
 		missingTextBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		missingTextBG.alpha = 0.6;
 		missingTextBG.visible = false;
@@ -35,7 +52,9 @@ class InitState extends FlxState
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
 		return;
-		#else
+		#end
+		#end
+
 		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
 		{
 			FlxTransitionableState.skipNextTransIn = true;
@@ -43,13 +62,11 @@ class InitState extends FlxState
 			MusicBeatState.switchState(new FlashingState());
 			return;
 		}
-		#end
-		#end
 
 		trace('PLAYSTATE SHITZ');
 		final songName:String = 'Tutorial';
 		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
-		final week:Int = 1;
+		final week:Int = 0;
 
 		persistentUpdate = false;
 		var songLowercase:String = Paths.formatToSongPath(songName);
@@ -60,6 +77,7 @@ class InitState extends FlxState
 			Song.loadFromJson(poop, songLowercase);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
+			PlayState.storyWeek = week;
 
 			trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
 		}
@@ -89,7 +107,6 @@ class InitState extends FlxState
 		}
 		LoadingState.prepareToSong();
 		LoadingState.loadAndSwitchState(new PlayState());
-		#if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
 
 		#if (MODS_ALLOWED && DISCORD_ALLOWED)
 		DiscordClient.loadModRPC();

@@ -1,92 +1,105 @@
 package states;
 
-import flixel.FlxSubState;
-
-import flixel.effects.FlxFlicker;
-import lime.app.Application;
+import flixel.FlxSprite;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import lime.utils.Assets;
+import openfl.utils.Assets as OpenFlAssets;
+import flixel.addons.display.FlxBackdrop;
 
 class FlashingState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
+	var curSel = 0;
+	var warnText:FlxText;
+	var descText:FlxText;
+	var starFG:FlxBackdrop;
+	var starBG:FlxBackdrop;
+	var enabled:Array<Bool> = [true, false, true, false];
+	var goBackNum = 3; // make this the last num in the array
+	var optionShit =
+	[['Flashing Lights', 'Enables flashing lights'],
+	['Low Quality', 'Less background elements, increased performance'],
+	['Rich Presence', 'Shows the real name of the song you\'re playing'],
+	['Start Game', 'Saves settings and starts the game']];
+	var menuItems:FlxTypedGroup<FlxText>;
 
-	var isYes:Bool = true;
-	var texts:FlxTypedSpriteGroup<FlxText>;
-	var bg:FlxSprite;
-
+	function saveOpts() {
+		ClientPrefs.data.flashing = enabled[0];
+		ClientPrefs.data.lowQuality = enabled[1];
+		ClientPrefs.data.discordRPC = enabled[2];
+		ClientPrefs.saveSettings();
+	}
 	override function create()
 	{
-		super.create();
+		// FlxG.sound.playMusic(Paths.music('whatsUpDog'), 0.3);
+		persistentUpdate = true;
+		#if DISCORD_ALLOWED
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Startup Config Screen", null);
+		#end
 
-		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		add(bg);
-
-		texts = new FlxTypedSpriteGroup<FlxText>();
-		texts.alpha = 0.0;
-		add(texts);
-
-		var warnText:FlxText = new FlxText(0, 0, FlxG.width,
-			"Hey, watch out!\n
-			This Mod contains some flashing lights!\n
-			Do you wish to disable them?");
-		warnText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
-		warnText.screenCenter(Y);
-		texts.add(warnText);
-
-		final keys = ["Yes", "No"];
-		for (i in 0...keys.length) {
-			final button = new FlxText(0, 0, FlxG.width, keys[i]);
-			button.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
-			button.y = (warnText.y + warnText.height) + 24;
-			button.x += (128 * i) - 80;
-			texts.add(button);
+		trace('menu');
+		menuItems = new FlxTypedGroup<FlxText>();
+		add(menuItems);
+		
+		warnText = new FlxText(50, 200, 1280, 'First Startup Configuration', 24);
+		descText = new FlxText(50, 620, 1280, '', 24);
+		for(i in [warnText, descText]) {
+			add(i);
 		}
 
-		FlxTween.tween(texts, {alpha: 1.0}, 0.5, {
-			onComplete: (_) -> updateItems()
-		});
-	}
+		trace('menu2');
+		for(i in 0...optionShit.length) {
+			var item = new FlxText(50, 300+(i*50), 1280, optionShit[i][0], 24);
+			item.ID = i;
+			menuItems.add(item);
+		}
+		super.create();
+		trace('sel');
+		changeSel(0);
+		trace('seldone');
 
+	}
+	function changeSel(oh:Int = 0) {
+		//if(oh != 0) FlxG.sound.play(Paths.sound('scrollMenu'), 1);
+		curSel+=oh; // Increment the thing
+
+		// if < > blah shit
+		if(curSel < 0) 
+			curSel = optionShit.length - 1;
+		if (curSel >= optionShit.length)
+			curSel = 0;
+
+		// Update the description..
+		descText.text = optionShit[curSel][1];
+		
+		menuItems.forEach(function(spr:FlxText)
+		{
+			if(spr.ID != goBackNum)
+				spr.text = (optionShit[spr.ID][0] + ': ') + (enabled[spr.ID] ? 'ON' : 'OFF');
+			spr.color = (curSel == spr.ID ? 0x62E0CF : FlxColor.WHITE);
+		});		
+	}
 	override function update(elapsed:Float)
 	{
-		if(leftState) {
-			super.update(elapsed);
-			return;
-		}
-		var back:Bool = controls.BACK;
-		if (controls.UI_LEFT_P || controls.UI_RIGHT_P) {
-			FlxG.sound.play(Paths.sound("scrollMenu"), 0.7);
-			isYes = !isYes;
-			updateItems();
-		}
-		if (controls.ACCEPT || back) {
-			leftState = true;
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			if(!back) {
-				ClientPrefs.data.flashing = !isYes;
-				ClientPrefs.saveSettings();
+		// controls shit
+		if(controls.UI_DOWN_P)
+			changeSel(1);
+		if(controls.UI_UP_P)
+			changeSel(-1);
+		if(controls.ACCEPT) {
+			if(curSel == goBackNum) {
+				saveOpts();
 				FlxG.sound.play(Paths.sound('confirmMenu'));
-				final button = texts.members[isYes ? 1 : 2];
-				FlxFlicker.flicker(button, 1, 0.1, false, true, function(flk:FlxFlicker) {
-					new FlxTimer().start(0.5, function (tmr:FlxTimer) {
-						FlxTween.tween(texts, {alpha: 0}, 0.2, {
-							onComplete: (_) -> MusicBeatState.switchState(new TitleState())
-						});
-					});
-				});
+				FlxTransitionableState.skipNextTransIn = false;
+				FlxTransitionableState.skipNextTransOut = false;
+				FlxG.switchState(new InitState());
 			} else {
-				FlxG.sound.play(Paths.sound('cancelMenu'));
-				FlxTween.tween(texts, {alpha: 0}, 1, {
-					onComplete: (_) -> MusicBeatState.switchState(new TitleState())
-				});
+				enabled[curSel] = !enabled[curSel];
+				changeSel();
 			}
 		}
 		super.update(elapsed);
-	}
-
-	function updateItems() {
-		// it's clunky but it works.
-		texts.members[1].alpha = isYes ? 1.0 : 0.6;
-		texts.members[2].alpha = isYes ? 0.6 : 1.0;
 	}
 }
