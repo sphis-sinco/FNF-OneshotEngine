@@ -151,10 +151,14 @@ class InitState extends FlxState
 		#else
 		songText = new FlxText(0, 0, 0, '', 64);
 		songText.screenCenter();
+		songText.alignment = CENTER;
 		add(songText);
 
 		diffText = new FlxText(songText.x, songText.y + 64, 0, "", 24);
 		add(diffText);
+
+		songText.y -= 128;
+		diffText.y += diffText.height + 64;
 		#end
 
 		curDifficulty = Math.round(Math.max(0, Difficulty.defaultList.indexOf(lastDifficultyName)));
@@ -167,10 +171,10 @@ class InitState extends FlxState
 		super.update(elapsed);
 
 		#if SONG_SELECTION
-		songText.text = ((sel > 0) ? '/\\\n' : '') + songs[sel] + ((sel < songs.length - 1) ? '\n/\\' : '');
-		songText.screenCenter();
-		diffText.screenCenter();
-		diffText.y += songText.height + diffText.height + 32;
+		songText.text = ((sel > 0) ? '/\\\n' : '_\n') + songs[sel] + ((sel < songs.length - 1) ? '\n\\/' : '\n_');
+
+		songText.screenCenter(X);
+		diffText.screenCenter(X);
 
 		if (Controls.instance.UI_LEFT_R)
 			changeDiff(-1);
