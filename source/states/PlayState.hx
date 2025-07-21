@@ -237,9 +237,9 @@ class PlayState extends MusicBeatState
 	public var opponentCameraOffset:Array<Float> = null;
 	public var girlfriendCameraOffset:Array<Float> = null;
 
+	var storyDifficultyText:String = "";
 	#if DISCORD_ALLOWED
 	// Discord RPC variables
-	var storyDifficultyText:String = "";
 	var detailsText:String = "";
 	var detailsPausedText:String = "";
 	#end
@@ -322,9 +322,9 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.bpm = SONG.bpm;
 
+		storyDifficultyText = Difficulty.getString();
 		#if DISCORD_ALLOWED
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
-		storyDifficultyText = Difficulty.getString();
 
 		if (isStoryMode)
 			detailsText = "Story Mode: " + WeekData.getCurrentWeek().weekName;
@@ -1568,7 +1568,7 @@ class PlayState extends MusicBeatState
 				oldNote = swagNote;
 			}
 		}
-		trace('["${SONG.song.toUpperCase()}" CHART INFO]: Ghost Notes Cleared: $ghostNotesCaught');
+		trace('["${SONG.song.toUpperCase()}-${storyDifficultyText.toUpperCase()}" CHART INFO]: Ghost Notes Cleared: $ghostNotesCaught');
 		for (event in SONG.events) // Event Notes
 			for (i in 0...event[1].length)
 				makeEvent(event, i);
