@@ -87,6 +87,7 @@ class InitState extends FlxState
 		}
 		Mods.loadTopMod();
 
+		trace('Song list: $songs');
 
 		#if debug
 		#if FREEPLAY
