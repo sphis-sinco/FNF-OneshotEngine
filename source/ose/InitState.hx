@@ -155,7 +155,7 @@ class InitState extends FlxState
 			sel = songs.length - 1;
 
 		if (Controls.instance.ACCEPT)
-			play();
+			play(sel);
 		#end
 	}
 
