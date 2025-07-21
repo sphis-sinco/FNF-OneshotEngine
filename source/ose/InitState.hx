@@ -17,6 +17,8 @@ class InitState extends FlxState
 	var songWeeks:Array<Int> = [];
 	var songsFolders:Array<String> = [];
 
+	var directoryTxt:FlxText;
+
 	override function create()
 	{
 		super.create();
@@ -120,6 +122,11 @@ class InitState extends FlxState
 			return;
 		}
 
+		directoryTxt = new FlxText(0, FlxG.height - 64, FlxG.width, '', 32);
+		directoryTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
+		directoryTxt.scrollFactor.set();
+		add(directoryTxt);
+
 		#if !SONG_SELECTION
 		play((songs.length > 1) ? FlxG.random.int(0, songs.length - 1) : 0);
 		#else
@@ -151,6 +158,8 @@ class InitState extends FlxState
 			sel = songs.length - 1;
 
 		Mods.currentModDirectory = songsFolders[sel];
+
+		directoryTxt.text = 'Mod directory: ${Mods.currentModDirectory}';
 
 		if (Controls.instance.ACCEPT)
 			play(sel);
