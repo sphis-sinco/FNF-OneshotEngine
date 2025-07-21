@@ -1,4 +1,4 @@
-# Unreleased
+# 1.1 (7/21/2025)
 - Removed the ability to head back to the InitState in the Finished State: TODO: Fix the mod directory somehow being set to null when returning
 - Added Results menu to the end of songs
 - The outdated sub state no longer mentions the check for updates option in release builds
