@@ -73,7 +73,8 @@ class Results extends MusicBeatState
 		misses = FlxMath.lerp(misses, PlayState.campaignMisses, tickMisses);
 		highestCombo = FlxMath.lerp(highestCombo, PlayState.highestCombo, tickHighestCombo);
 
-		resultsText.text = 'Score: ${Std.int(score)}' + '\n\n\nMisses: ${Std.int(misses)}' + '\n\n\nHighest Combo: ${Std.int(highestCombo)}';
+		resultsText.text = 'Song: ${PlayState.SONG.song}\n\n\n' + 'Score: ${Std.int(score)}' + '\n\n\nMisses: ${Std.int(misses)}'
+			+ '\n\n\nHighest Combo: ${Std.int(highestCombo)}';
 		resultsText.text = resultsText.text.toUpperCase();
 
 		if (controls.ACCEPT)
