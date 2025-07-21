@@ -91,8 +91,11 @@ class InitState extends FlxState
 					colors = [146, 113, 253];
 				}
 
-				songs.push(song[0]);
-				songWeeks.push(i);
+				if (!songs.contains(song[0]))
+				{
+					songs.push(song[0]);
+					songWeeks.push(i);
+				}
 			}
 		}
 		Mods.loadTopMod();
