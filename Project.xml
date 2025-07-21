@@ -27,7 +27,7 @@
 
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 
-	<define name="MODS_ALLOWED" if="desktop" />
+	<!-- <define name="MODS_ALLOWED" if="desktop" />-->
 	<define name="DISCORD_ALLOWED" />
 	<define name="IRIS_DEBUG" />
 
