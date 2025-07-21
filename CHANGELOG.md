@@ -1,4 +1,6 @@
 # Unreleased
+- The outdated check happens in the Song Select
+- (Debug) You can now access the Master Editor Menu from the Song Selector Menu by leaving the menu
 - The Song Selector no longer displays "Mod Directory """ when selecting a song not from a mod
 - (Debug) Added "Song Selector" to the Master Editor Menu
 

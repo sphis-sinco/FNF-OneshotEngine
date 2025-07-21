@@ -1,5 +1,6 @@
 package ose;
 
+import states.editors.MasterEditorMenu;
 import states.*;
 import backend.*;
 import flixel.*;
@@ -19,6 +20,7 @@ class InitState extends FlxState
 
 	var directoryTxt:FlxText;
 
+	static var showOutdatedWarning:Bool = true;
 	override function create()
 	{
 		super.create();
@@ -122,6 +124,15 @@ class InitState extends FlxState
 			return;
 		}
 
+		#if CHECK_FOR_UPDATES
+		if (showOutdatedWarning && ClientPrefs.data.checkForUpdates && substates.OutdatedSubState.updateVersion != ose.Global.OSEV)
+		{
+			persistentUpdate = false;
+			showOutdatedWarning = false;
+			openSubState(new substates.OutdatedSubState());
+		}
+		#end
+
 		directoryTxt = new FlxText(0, FlxG.height - 64, FlxG.width, '', 32);
 		directoryTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
 		directoryTxt.scrollFactor.set();
@@ -151,6 +162,10 @@ class InitState extends FlxState
 			sel--;
 		if (Controls.instance.UI_RIGHT_R)
 			sel++;
+		#if debug
+		if (Controls.instance.BACK)
+			MusicBeatState.switchState(new MasterEditorMenu());
+		#end
 
 		if (sel < 0)
 			sel = 0;

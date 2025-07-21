@@ -18,7 +18,7 @@ class OutdatedSubState extends MusicBeatSubstate
 	{
 		super.create();
 
-		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
 		bg.scrollFactor.set();
 		bg.alpha = 0.0;
 		add(bg);
@@ -33,7 +33,7 @@ class OutdatedSubState extends MusicBeatSubstate
 			-----------------------------------------------\n
 			Thank you for using the Engine!',
 			32);
-		warnText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
+		warnText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.BLACK, CENTER);
 		warnText.scrollFactor.set();
 		warnText.screenCenter(Y);
 		warnText.alpha = 0.0;
