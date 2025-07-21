@@ -10,8 +10,11 @@ class InitState extends FlxState
 {
 	var missingTextBG:FlxSprite;
 	var missingText:FlxText;
-	
+
+	var songText:FlxText;
+
 	public static var songs:Array<String> = [];
+	var songWeeks:Array<Int> = [];
 
 	override function create()
 	{
@@ -49,19 +52,24 @@ class InitState extends FlxState
 
 		WeekData.reloadWeekFiles(false);
 
-		if(WeekData.weeksList.length < 1)
+		if (WeekData.weeksList.length < 1)
 		{
 			FlxTransitionableState.skipNextTransIn = true;
 			persistentUpdate = false;
-			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
-				function() MusicBeatState.switchState(new states.editors.WeekEditorState()),
-				function() MusicBeatState.switchState(new states.MainMenuState())));
+			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED\n\nPress ACCEPT or BACK to close the game", function()
+			{
+				throw 'No weeks added';
+			}, function()
+			{
+				throw 'No weeks added';
+			}));
 			return;
 		}
 
 		for (i in 0...WeekData.weeksList.length)
 		{
-			if(FreeplayState.weekIsLocked(WeekData.weeksList[i])) continue;
+			if (FreeplayState.weekIsLocked(WeekData.weeksList[i]))
+				continue;
 
 			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
 			var leSongs:Array<String> = [];
@@ -77,12 +85,13 @@ class InitState extends FlxState
 			for (song in leWeek.songs)
 			{
 				var colors:Array<Int> = song[2];
-				if(colors == null || colors.length < 3)
+				if (colors == null || colors.length < 3)
 				{
 					colors = [146, 113, 253];
 				}
 
 				songs.push(song[0]);
+				songWeeks.push(i);
 			}
 		}
 		Mods.loadTopMod();
@@ -99,7 +108,6 @@ class InitState extends FlxState
 		#end
 
 		MusicBeatState.switchState(new TitleState());
-
 		#end
 
 		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
@@ -110,21 +118,50 @@ class InitState extends FlxState
 			return;
 		}
 
+		#if !SONG_SELECTION
+		play((songs.length > 1) ? FlxG.random.int(0, songs.length - 1) : 0);
+		#else
+		songText = new FlxText(0, 0, 0, '');
+		songText.screenCenter();
+		add(songText);
+		#end
+	}
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		#if SONG_SELECTION
+		songText.text = ((sel > 0) ? '< ' : '') + songs[sel] + ((sel < songs.length - 1) ? ' >' : '');
+
+		if (Controls.instance.UI_LEFT_R)
+			sel--;
+		if (Controls.instance.UI_RIGHT_R)
+			sel++;
+
+		if (sel < 0)
+			sel = 0;
+		if (sel > songs.length - 1)
+			sel = songs.length - 1;
+
+		if (Controls.instance.ACCEPT)
+			play();
+		#end
+	}
+
+	var sel = 0;
+
+	function play(id:Int = 0)
+	{
 		trace('PLAYSTATE SHITZ');
-		var songName:String = songs[0];
-
-		if (songs.length > 1)
-			songName = songs[FlxG.random.int(0, songs.length - 1)];
-
 		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
-		final week:Int = 0;
 
 		Difficulty.resetList();
 
 		trace('Difficulty: ${Difficulty.getString(curDifficulty)}');
 
 		persistentUpdate = false;
-		var songLowercase:String = Paths.formatToSongPath(songName);
+		var songLowercase:String = Paths.formatToSongPath(songs[id]);
 		var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 
 		try
@@ -132,7 +169,7 @@ class InitState extends FlxState
 			Song.loadFromJson(poop, songLowercase);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
-			PlayState.storyWeek = week;
+			PlayState.storyWeek = songWeeks[id];
 
 			trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
 		}
