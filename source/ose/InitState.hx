@@ -1,17 +1,15 @@
 package ose;
 
-import lime.app.Application;
-import Discord.DiscordClient;
-import flixel.util.FlxTimer;
-import flixel.util.typeLimit.NextState;
-import flixel.FlxG;
-import flixel.FlxState;
+import states.*;
+import backend.*;
+import flixel.*;
 
 using StringTools;
 
 class InitState extends FlxState
 {
-	var outdated = false;
+	var missingTextBG:FlxSprite;
+	var missingText:FlxText;
 
 	override function create()
 	{
@@ -19,125 +17,82 @@ class InitState extends FlxState
 
 		trace('yo');
 
-		#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
-		#end
+		missingTextBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		missingTextBG.alpha = 0.6;
+		missingTextBG.visible = false;
+		add(missingTextBG);
 
-		#if sys
-		if (!sys.FileSystem.exists(Sys.getCwd() + "/assets/replays"))
-			sys.FileSystem.createDirectory(Sys.getCwd() + "/assets/replays");
-		#end
+		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
+		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		missingText.scrollFactor.set();
+		missingText.visible = false;
+		add(missingText);
 
-		@:privateAccess
-		{
-			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
-		}
-
-		PlayerSettings.init();
-
-		#if windows
-		DiscordClient.initialize();
-
-		Application.current.onExit.add(function(exitCode)
-		{
-			DiscordClient.shutdown();
-		});
-		#end
-		FlxG.save.bind('OneShot', 'Sinco');
-		KadeEngineData.initSave();
-
-		// NGio.noLogin(APIStuff.API);
-
-		#if ng
-		var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
-		trace('NEWGROUNDS LOL');
-		#end
-
-		// var file:SMFile = SMFile.loadFile("file.sm");
-		// this was testing things
-
-		Highscore.load();
-
-		if (FlxG.save.data.weekUnlocked != null)
-		{
-			// FIX LATER!!!
-			// WEEK UNLOCK PROGRESSION!!
-			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
-			if (StoryMenuState.weekUnlocked.length < 4)
-				StoryMenuState.weekUnlocked.insert(0, true);
-
-			// QUICK PATCH OOPS!
-			if (!StoryMenuState.weekUnlocked[0])
-				StoryMenuState.weekUnlocked[0] = true;
-		}
-
+		#if debug
 		#if FREEPLAY
-		FlxG.switchState(new FreeplayState());
+		MusicBeatState.switchState(new FreeplayState());
+		return;
 		#elseif CHARTING
-		FlxG.switchState(new ChartingState());
+		MusicBeatState.switchState(new ChartingState());
+		return;
 		#else
-		new FlxTimer().start(2, function(tmr:FlxTimer)
+		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
 		{
-			// Get current version of Engine
-
-			var http = new haxe.Http('https://raw.githubusercontent.com/sphis-sinco/FNF-OneshotEngine/refs/heads/main/version.downloadMe');
-			var returnedData:Array<String> = [];
-
-			http.onData = function(data:String)
-			{
-				returnedData[0] = data.substring(0, data.indexOf(';'));
-				returnedData[1] = data.substring(data.indexOf('-'), data.length);
-				if (!Global.OSEVersion.contains(returnedData[0].trim()) && !OutdatedSubState.leftState)
-				{
-					trace('outdated lmao! ' + returnedData[0] + ' != ' + Global.OSEVersion);
-					OutdatedSubState.needVer = returnedData[0];
-					OutdatedSubState.currChanges = returnedData[1];
-					outdated = true;
-				}
-			}
-
-			http.onError = function(error)
-			{
-				trace('error: $error');
-				FlxG.switchState(new MainMenuState()); // fail but we go anyway
-			}
-
-			http.request();
-		});
-
-		if (outdated)
-		{
-			FlxG.switchState(new OutdatedSubState());
+			FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
+			MusicBeatState.switchState(new FlashingState());
+			return;
 		}
-		else
-		{
-			#if debug
-			FlxG.switchState(new TitleState());
-			#if cpp
-			FlxG.switchState(new Caching());
-			#end
-			#else
-			trace('PLAYSTATE SHITZ');
-			final song:String = 'Tutorial';
-			final difficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
-			final week:Int = 1;
+		#end
+		#end
 
-			final songFormat = StringTools.replace(song, " ", "-");
-			final poop:String = Highscore.formatSong(songFormat, difficulty);
-			PlayState.SONG = Song.loadFromJson(poop, songFormat);
+		trace('PLAYSTATE SHITZ');
+		final songName:String = 'Tutorial';
+		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
+		final week:Int = 1;
+
+		persistentUpdate = false;
+		var songLowercase:String = Paths.formatToSongPath(songName);
+		var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
+
+		try
+		{
+			Song.loadFromJson(poop, songLowercase);
 			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = difficulty;
-			PlayState.storyWeek = week;
-			trace('PLAYSTATE SHITZ done');
+			PlayState.storyDifficulty = curDifficulty;
 
-			#if cpp
-			FlxG.switchState(new Caching());
-			#else
-			FlxG.switchState(new PlayState());
-			#end
-			#end
+			trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
 		}
+		catch (e:haxe.Exception)
+		{
+			trace('ERROR! ${e.message}');
+
+			var errorStr:String = e.message;
+			if (errorStr.contains('There is no TEXT asset with an ID of'))
+				errorStr = 'Missing file: ' + errorStr.substring(errorStr.indexOf(songLowercase), errorStr.length - 1); // Missing chart
+			else
+				errorStr += '\n\n' + e.stack;
+
+			missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
+			missingText.screenCenter(Y);
+			missingText.visible = true;
+			missingTextBG.visible = true;
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+
+			return;
+		}
+		@:privateAccess
+		if (PlayState._lastLoadedModDirectory != Mods.currentModDirectory)
+		{
+			trace('CHANGED MOD DIRECTORY, RELOADING STUFF');
+			Paths.freeGraphicsFromMemory();
+		}
+		LoadingState.prepareToSong();
+		LoadingState.loadAndSwitchState(new PlayState());
+		#if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
+
+		#if (MODS_ALLOWED && DISCORD_ALLOWED)
+		DiscordClient.loadModRPC();
 		#end
 	}
 }
