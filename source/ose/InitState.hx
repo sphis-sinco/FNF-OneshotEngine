@@ -10,6 +10,8 @@ class InitState extends FlxState
 {
 	var missingTextBG:FlxSprite;
 	var missingText:FlxText;
+	
+	var songs:Array<String> = [];
 
 	override function create()
 	{
@@ -45,6 +47,47 @@ class InitState extends FlxState
 		missingText.visible = false;
 		add(missingText);
 
+		WeekData.reloadWeekFiles(false);
+
+		if(WeekData.weeksList.length < 1)
+		{
+			FlxTransitionableState.skipNextTransIn = true;
+			persistentUpdate = false;
+			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
+				function() MusicBeatState.switchState(new states.editors.WeekEditorState()),
+				function() MusicBeatState.switchState(new states.MainMenuState())));
+			return;
+		}
+
+		for (i in 0...WeekData.weeksList.length)
+		{
+			if(FreeplayState.weekIsLocked(WeekData.weeksList[i])) continue;
+
+			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
+			var leSongs:Array<String> = [];
+			var leChars:Array<String> = [];
+
+			for (j in 0...leWeek.songs.length)
+			{
+				leSongs.push(leWeek.songs[j][0]);
+				leChars.push(leWeek.songs[j][1]);
+			}
+
+			WeekData.setDirectoryFromWeek(leWeek);
+			for (song in leWeek.songs)
+			{
+				var colors:Array<Int> = song[2];
+				if(colors == null || colors.length < 3)
+				{
+					colors = [146, 113, 253];
+				}
+
+				songs.push(song[0]);
+			}
+		}
+		Mods.loadTopMod();
+
+
 		#if debug
 		#if FREEPLAY
 		MusicBeatState.switchState(new FreeplayState());
@@ -53,6 +96,9 @@ class InitState extends FlxState
 		MusicBeatState.switchState(new ChartingState());
 		return;
 		#end
+
+		MusicBeatState.switchState(new TitleState());
+
 		#end
 
 		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
@@ -64,7 +110,11 @@ class InitState extends FlxState
 		}
 
 		trace('PLAYSTATE SHITZ');
-		final songName:String = 'Tutorial';
+		var songName:String = songs[0];
+
+		if (songs.length >= 1)
+			songName = songs[FlxG.random.int(0, songs.length - 1)];
+
 		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
 		final week:Int = 0;
 
