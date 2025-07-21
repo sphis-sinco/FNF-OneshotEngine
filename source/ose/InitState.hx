@@ -33,6 +33,8 @@ class InitState extends FlxState
 
 		trace('yo');
 
+		Difficulty.resetList();
+
 		if (FlxG.sound.music == null)
 			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 
@@ -150,6 +152,9 @@ class InitState extends FlxState
 		songText = new FlxText(0, 0, 0, '', 64);
 		songText.screenCenter();
 		add(songText);
+
+		diffText = new FlxText(songText.x, songText.y + 64, 0, "", 24);
+		add(diffText);
 		#end
 
 		curDifficulty = Math.round(Math.max(0, Difficulty.defaultList.indexOf(lastDifficultyName)));
@@ -162,17 +167,19 @@ class InitState extends FlxState
 		super.update(elapsed);
 
 		#if SONG_SELECTION
-		songText.text = ((sel > 0) ? '< ' : '') + songs[sel] + ((sel < songs.length - 1) ? ' >' : '');
+		songText.text = ((sel > 0) ? '/\\\n' : '') + songs[sel] + ((sel < songs.length - 1) ? '\n/\\' : '');
 		songText.screenCenter();
+		diffText.screenCenter();
+		diffText.y += songText.height + diffText.height + 32;
 
 		if (Controls.instance.UI_LEFT_R)
-			sel--;
-		if (Controls.instance.UI_RIGHT_R)
-			sel++;
-		if (Controls.instance.UI_UP_R)
 			changeDiff(-1);
-		if (Controls.instance.UI_DOWN_R)
+		if (Controls.instance.UI_RIGHT_R)
 			changeDiff(1);
+		if (Controls.instance.UI_UP_R)
+			sel--;
+		if (Controls.instance.UI_DOWN_R)
+			sel++;
 		#if debug
 		if (Controls.instance.BACK)
 			MusicBeatState.switchState(new MasterEditorMenu());
@@ -199,8 +206,6 @@ class InitState extends FlxState
 	function play(id:Int = 0)
 	{
 		trace('PLAYSTATE SHITZ');
-
-		Difficulty.resetList();
 
 		trace('Difficulty: ${Difficulty.getString(curDifficulty)}');
 
@@ -251,9 +256,9 @@ class InitState extends FlxState
 	function changeDiff(change:Int = 0)
 	{
 		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, Difficulty.list.length - 1);
-
 		lastDifficultyName = Difficulty.getString(curDifficulty, false);
-		var displayDiff:String = Difficulty.getString(curDifficulty);
+		final displayDiff:String = Difficulty.getString(curDifficulty);
+		// trace('Current difficulty: $displayDiff');
 
 		try
 		{
@@ -261,6 +266,8 @@ class InitState extends FlxState
 				diffText.text = '< ' + displayDiff.toUpperCase() + ' >';
 			else
 				diffText.text = displayDiff.toUpperCase();
+
+			// trace('Difficulty list length: ${Difficulty.list.length}');
 		}
 		catch (e)
 		{
