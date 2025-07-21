@@ -27,9 +27,11 @@
 
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 
-	<!-- <define name="MODS_ALLOWED" if="desktop" />-->
+	<define name="MODS_ALLOWED" if="desktop" />
 	<define name="DISCORD_ALLOWED" />
 	<define name="IRIS_DEBUG" />
+	
+	<define name="SONG_SELECTION"/>
 
 	<define name="MULTITHREADED_LOADING" /> <!-- UNCOMMENTING THIS LINE WILL ENABLE MULTITHREADED
 	LOADING, WHICH IMPROVES LOADING TIMES, BUT APPARENTLY CAN FREEZE THE GAME ON SONG LOAD IN
