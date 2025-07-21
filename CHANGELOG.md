@@ -1,4 +1,5 @@
 # Unreleased
+- Added Results menu to the end of songs
 - The outdated sub state no longer mentions the check for updates option in release builds
 - Added support for compiling to Hashlink
 - If there is only one song they don't play automatially anymore

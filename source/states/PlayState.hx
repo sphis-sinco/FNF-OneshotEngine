@@ -2807,11 +2807,11 @@ class PlayState extends MusicBeatState
 				return false;
 			}
 
+			campaignScore += songScore;
+			campaignMisses += songMisses;
+
 			if (isStoryMode)
 			{
-				campaignScore += songScore;
-				campaignMisses += songMisses;
-
 				storyPlaylist.remove(storyPlaylist[0]);
 
 				if (storyPlaylist.length > 0)
