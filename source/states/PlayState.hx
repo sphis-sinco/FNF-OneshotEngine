@@ -669,6 +669,7 @@ class PlayState extends MusicBeatState
 		OSEVer.scrollFactor.set();
 		OSEVer.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		OSEVer.y = FlxG.height - OSEVer.height;
+		OSEVer.scrollFactor.set();
 		add(OSEVer);
 
 		var KEYBINDS:FlxText = new FlxText(0, FlxG.height, FlxG.width,
@@ -681,6 +682,7 @@ class PlayState extends MusicBeatState
 		KEYBINDS.scrollFactor.set();
 		KEYBINDS.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		KEYBINDS.y = FlxG.height - KEYBINDS.height;
+		KEYBINDS.scrollFactor.set();
 		add(KEYBINDS);
 	}
 
