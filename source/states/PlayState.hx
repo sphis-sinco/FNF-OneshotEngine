@@ -671,7 +671,7 @@ class PlayState extends MusicBeatState
 		OSEVer.y = FlxG.height - OSEVer.height;
 		uiGroup.add(OSEVer);
 
-		var KEYBINDS:FlxText = new FlxText(0, FlxG.height, FlxG.width,
+		KEYBINDS = new FlxText(0, FlxG.height, FlxG.width,
 			'Keybinds:'
 			+ '\nLeft: ${ClientPrefs.keyBinds.get('note_left')[0].toString()}/${ClientPrefs.keyBinds.get('note_left')[1].toString()}'
 			+ '\nDown: ${ClientPrefs.keyBinds.get('note_down')[0].toString()}/${ClientPrefs.keyBinds.get('note_down')[1].toString()}'
@@ -683,6 +683,8 @@ class PlayState extends MusicBeatState
 		KEYBINDS.y = FlxG.height - KEYBINDS.height;
 		uiGroup.add(KEYBINDS);
 	}
+
+	public var KEYBINDS:FlxText;
 
 	function set_songSpeed(value:Float):Float
 	{
@@ -1838,6 +1840,17 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
+		if (controls.NOTE_DOWN_P || controls.NOTE_LEFT_P || controls.NOTE_RIGHT_P || controls.NOTE_UP_P)
+		{
+			if (KEYBINDS != null)
+				FlxTween.tween(KEYBINDS, {alpha: 0}, 2, {
+					onComplete: tween ->
+					{
+						KEYBINDS.destroy();
+					}
+				});
+		}
+
 		if (!inCutscene && !paused && !freezeCamera)
 		{
 			FlxG.camera.followLerp = 0.04 * cameraSpeed * playbackRate;
