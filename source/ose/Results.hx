@@ -5,7 +5,6 @@ class Results extends MusicBeatState
 	public var ref:FlxSprite;
 
 	public var character:FlxSprite;
-	public var container:FlxSprite;
 
 	public var resultsText:FlxText;
 
@@ -24,12 +23,18 @@ class Results extends MusicBeatState
 		add(bg);
 		bg.screenCenter();
 
+		var container = new FlxSprite();
+		container.loadGraphic(Paths.image('results/container'));
+		container.setPosition(0,0);
+
 		character = new FlxSprite();
 		character.frames = Paths.getSparrowAtlas('results/$characterFileName');
 		character.animation.addByPrefix('animation', characterFileName, 24, false);
 		character.animation.play('animation');
 		character.setPosition(530.95 - 306.15, -76 + 3.1);
 		add(character);
+
+		add(container);
 
 		resultsText = new FlxText(0, 0, 0, '', 64);
 		resultsText.font = Paths.font('5by7.ttf');
