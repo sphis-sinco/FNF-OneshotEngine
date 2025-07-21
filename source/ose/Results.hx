@@ -18,6 +18,10 @@ class Results extends MusicBeatState
 		add(ref);
 		ref.screenCenter();
 
+                var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+                add(bg);
+                bg.screenCenter();
+
 		character = new FlxSprite();
 		character.frames = Paths.getSparrowAtlas('results/$characterFileName');
 		character.animation.addByPrefix('animation', characterFileName, 24, false);
