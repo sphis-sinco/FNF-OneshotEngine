@@ -83,7 +83,7 @@ class ChartingState extends MusicBeatState implements PsychUIEventHandler.PsychU
 		[
 			'Add Camera Offset',
 			'Adds an offset to the camera follow position.\nValue 1 - X offset\nValue 2 - Y offset'
-		]
+		],
 		[
 			'Dadbattle Spotlight', 
 			"Used in Dad Battle,\nValue 1: 0/1 = ON/OFF,\n2 = Target Dad\n3 = Target BF"
