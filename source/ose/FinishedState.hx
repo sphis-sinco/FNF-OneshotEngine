@@ -9,7 +9,7 @@ class FinishedState extends FlxState
 	{
 		super.create();
 
-		var text:FlxText = new FlxText(0, 0, FlxG.width, 'Yo! You finished the oneshot mod, congrats bro.', 16);
+		var text:FlxText = new FlxText(0, 0, 0, 'Yo! You finished the oneshot mod, congrats bro.', 16);
 		if (InitState.songs.length > 1)
 		{
 			text.text += '\nThere are ${InitState.songs.length - 1} more songs though, so you and try to get those if you want.'
