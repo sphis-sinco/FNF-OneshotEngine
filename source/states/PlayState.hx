@@ -670,6 +670,18 @@ class PlayState extends MusicBeatState
 		OSEVer.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		OSEVer.y = FlxG.height - OSEVer.height;
 		add(OSEVer);
+
+		var KEYBINDS:FlxText = new FlxText(0, FlxG.height, FlxG.width,
+			'Keybinds:'
+			+ '\nLeft: ${ClientPrefs.keyBinds.get('note_left')[0].toString()}/${ClientPrefs.keyBinds.get('note_left')[1].toString()}'
+			+ '\nDown: ${ClientPrefs.keyBinds.get('note_down')[0].toString()}/${ClientPrefs.keyBinds.get('note_down')[1].toString()}'
+			+ '\nUp: ${ClientPrefs.keyBinds.get('note_up')[0].toString()}/${ClientPrefs.keyBinds.get('note_up')[1].toString()}'
+			+ '\nRight: ${ClientPrefs.keyBinds.get('note_right')[0].toString()}/${ClientPrefs.keyBinds.get('note_right')[1].toString()}',
+			16);
+		KEYBINDS.scrollFactor.set();
+		KEYBINDS.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		KEYBINDS.y = FlxG.height - KEYBINDS.height;
+		add(KEYBINDS);
 	}
 
 	function set_songSpeed(value:Float):Float
@@ -1402,8 +1414,7 @@ class PlayState extends MusicBeatState
 		{
 			if (SONG.needsVoices)
 			{
-				var playerVocals = Paths.voices(SONG.song,
-					(boyfriend.vocalsFile == null || boyfriend.vocalsFile.length < 1) ? 'Player' : boyfriend.vocalsFile);
+				var playerVocals = Paths.voices(SONG.song, (boyfriend.vocalsFile == null || boyfriend.vocalsFile.length < 1) ? 'Player' : boyfriend.vocalsFile);
 				vocals.loadEmbedded(playerVocals != null ? playerVocals : Paths.voices(SONG.song));
 
 				var oppVocals = Paths.voices(SONG.song, (dad.vocalsFile == null || dad.vocalsFile.length < 1) ? 'Opponent' : dad.vocalsFile);
@@ -1888,7 +1899,8 @@ class PlayState extends MusicBeatState
 			Conductor.songPosition += elapsed * 1000 * playbackRate;
 			if (Conductor.songPosition >= Conductor.offset)
 			{
-				if (FlxG.sound.music == null) return;
+				if (FlxG.sound.music == null)
+					return;
 
 				try
 				{
