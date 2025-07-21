@@ -111,7 +111,9 @@ class InitState extends FlxState
 		return;
 		#end
 
+		#if !NO_TITLE
 		MusicBeatState.switchState(new TitleState());
+		#end
 		#end
 
 		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
