@@ -121,7 +121,7 @@ class InitState extends FlxState
 		#if !SONG_SELECTION
 		play((songs.length > 1) ? FlxG.random.int(0, songs.length - 1) : 0);
 		#else
-		songText = new FlxText(0, 0, 0, '');
+		songText = new FlxText(0, 0, 0, '', 64);
 		songText.screenCenter();
 		add(songText);
 		#end
@@ -133,6 +133,7 @@ class InitState extends FlxState
 
 		#if SONG_SELECTION
 		songText.text = ((sel > 0) ? '< ' : '') + songs[sel] + ((sel < songs.length - 1) ? ' >' : '');
+		songText.screenCenter();
 
 		if (Controls.instance.UI_LEFT_R)
 			sel--;
