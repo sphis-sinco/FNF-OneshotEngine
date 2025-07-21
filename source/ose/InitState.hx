@@ -119,6 +119,8 @@ class InitState extends FlxState
 		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
 		final week:Int = 0;
 
+		trace('Difficulty: ${Difficulty.getString(curDifficulty)}');
+
 		persistentUpdate = false;
 		var songLowercase:String = Paths.formatToSongPath(songName);
 		var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
