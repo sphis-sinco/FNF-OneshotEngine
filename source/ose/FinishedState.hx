@@ -20,10 +20,11 @@ class FinishedState extends FlxState
 			#end
 			+ '\n\n(Press ENTER to go back to InitState and '
 			#if SONG_SELECTION
-			+ ' play those other songs)';
+			+ ' play those other songs'
 			#else
-			+ ' try to get those other songs)';
+			+ ' try to get those other songs'
 			#end
+			+ ', if you haven\'t already)';
 		}
 		text.screenCenter();
 		add(text);
