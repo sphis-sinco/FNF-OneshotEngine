@@ -1,4 +1,5 @@
 # Unreleased
+- The watermark text in PlayState is modifyable with scripts now
 - Fixed the top mod's songs being the only you can play
 - Fixed position of the missing chart text
 

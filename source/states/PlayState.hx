@@ -665,7 +665,7 @@ class PlayState extends MusicBeatState
 		if (eventNotes.length < 1)
 			checkEventNote();
 
-		var OSEVer:FlxText = new FlxText(0, FlxG.height, FlxG.width, Global.OSEWatermark, 16);
+		OSEVer = new FlxText(0, FlxG.height, FlxG.width, Global.OSEWatermark, 16);
 		OSEVer.scrollFactor.set();
 		OSEVer.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		OSEVer.y = FlxG.height - OSEVer.height;
@@ -685,6 +685,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public var KEYBINDS:FlxText;
+	public var OSEVer:FlxText;
 
 	function set_songSpeed(value:Float):Float
 	{
