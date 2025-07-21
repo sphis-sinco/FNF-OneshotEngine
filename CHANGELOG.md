@@ -1,4 +1,5 @@
 # Unreleased
+- The Song Selector no longer displays "Mod Directory """ when selecting a song not from a mod
 - (Debug) Added "Song Selector" to the Master Editor Menu
 
 # 1.0.4 (7/21/2025)
