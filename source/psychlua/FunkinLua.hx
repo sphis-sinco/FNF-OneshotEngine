@@ -123,7 +123,8 @@ class FunkinLua {
 		@:privateAccess
 		{
 			var curSection:SwagSection = PlayState.SONG.notes[game.curSection];
-			set('gameInstance', game);
+			set('OSEVer', game.OSEVer);
+			set('KEYBINDS', game.KEYBINDS);
 
 			set('curSection', game.curSection);
 			set('curBeat', game.curBeat);
