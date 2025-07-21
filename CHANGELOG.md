@@ -1,4 +1,5 @@
 # Unreleased
+- Added "Add Camera Offset" event to the chart editor
 - Added "Zoom Camera" event to the chart editor
 - Added "Move Camera" event to the chart editor
 - The outdated state sends you to the right URL now

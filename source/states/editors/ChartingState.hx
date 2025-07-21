@@ -74,12 +74,16 @@ class ChartingState extends MusicBeatState implements PsychUIEventHandler.PsychU
 		], //Always leave this one empty pls
 		[
 			'Move Camera', 
-			"Moves the camera to a specific person\nValue 1: BF/Boyfriend/0 = Boyfriend, GF/Girlfriend/1 = Girlfriend, anything else will do the Dad"
+			"Moves the camera to a specific person.\nValue 1: BF/Boyfriend/0 = Boyfriend, GF/Girlfriend/1 = Girlfriend, anything else will do the Dad"
 		],
 		[
 			'Zoom Camera', 
-			"Sets the game zoom\nValue1: New cam zoom value."
+			"Sets the game zoom.\nValue1: New cam zoom value."
 		],
+		[
+			'Add Camera Offset',
+			'Adds an offset to the camera follow position.\nValue 1 - X offset\nValue 2 - Y offset'
+		]
 		[
 			'Dadbattle Spotlight', 
 			"Used in Dad Battle,\nValue 1: 0/1 = ON/OFF,\n2 = Target Dad\n3 = Target BF"

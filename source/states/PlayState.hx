@@ -2299,6 +2299,19 @@ class PlayState extends MusicBeatState
 
 		switch (eventName)
 		{
+			case 'Add Camera Offset':
+				if (camFollow != null)
+				{
+					if (flValue1 != null || flValue2 != null)
+					{
+						if (flValue1 == null)
+							flValue1 = 0;
+						if (flValue2 == null)
+							flValue2 = 0;
+						camFollow.x += flValue1;
+						camFollow.y += flValue2;
+					}
+				}
 
 			case 'Zoom Camera':
 				defaultCamZoom = flValue1;
