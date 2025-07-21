@@ -2299,6 +2299,21 @@ class PlayState extends MusicBeatState
 
 		switch (eventName)
 		{
+
+			case 'Zoom Camera':
+				defaultCamZoom = flValue1;
+
+			case 'Move Camera':
+				switch (value1.toLowerCase().trim())
+				{
+					case 'bf' | 'boyfriend' | '0':
+						moveCamera(false);
+					case 'gf' | 'girlfriend' | '1':
+						moveCameraToGirlfriend();
+					default:
+						moveCamera(true);
+				}
+
 			case 'Hey!':
 				var value:Int = 2;
 				switch (value1.toLowerCase().trim())
@@ -2597,20 +2612,16 @@ class PlayState extends MusicBeatState
 		if (gf != null && SONG.notes[sec].gfSection)
 		{
 			moveCameraToGirlfriend();
-			callOnScripts('onMoveCamera', ['gf']);
 			return;
 		}
 
 		var isDad:Bool = (SONG.notes[sec].mustHitSection != true);
 		moveCamera(isDad);
-		if (isDad)
-			callOnScripts('onMoveCamera', ['dad']);
-		else
-			callOnScripts('onMoveCamera', ['boyfriend']);
 	}
 
 	public function moveCameraToGirlfriend()
 	{
+		callOnScripts('onMoveCamera', ['gf']);
 		camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
 		camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
 		camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
@@ -2621,6 +2632,11 @@ class PlayState extends MusicBeatState
 
 	public function moveCamera(isDad:Bool)
 	{
+		if (isDad)
+			callOnScripts('onMoveCamera', ['dad']);
+		else
+			callOnScripts('onMoveCamera', ['boyfriend']);
+
 		if (isDad)
 		{
 			if (dad == null)

@@ -1,4 +1,6 @@
 # Unreleased
+- Added "Zoom Camera" event to the chart editor
+- Added "Move Camera" event to the chart editor
 - The outdated state sends you to the right URL now
 - The outdated check happens in the Song Select
 - (Debug) You can now access the Master Editor Menu from the Song Selector Menu by leaving the menu
