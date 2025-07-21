@@ -1,4 +1,5 @@
 # 1.0.3 (7/21/2025)
+- Pressing backspace in the game over screen no longer sends you to freeplay (in release builds)
 - The finished state text now says ", if you haven't already" at the end
 - Fixed song selection not selecting the song properly
 - Added "NO_TITLE" debug flag so you can test the song selection menu in debug builds
