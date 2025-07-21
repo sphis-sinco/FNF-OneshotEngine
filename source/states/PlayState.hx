@@ -1263,6 +1263,7 @@ class PlayState extends MusicBeatState
 			tempScore = Language.getPhrase('score_text', 'Score: {1} | Misses: {2} | Rating: {3}', [songScore, songMisses, str]);
 		else
 			tempScore = Language.getPhrase('score_text_instakill', 'Score: {1} | Rating: {2}', [songScore, str]);
+		tempScore = Language.getPhrase('score_text', 'Score: {1} ', [songScore]);
 		scoreTxt.text = tempScore;
 	}
 
