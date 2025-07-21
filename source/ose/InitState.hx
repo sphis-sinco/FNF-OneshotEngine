@@ -159,7 +159,7 @@ class InitState extends FlxState
 
 		Mods.currentModDirectory = songsFolders[sel];
 
-		directoryTxt.text = 'Mod directory: ${Mods.currentModDirectory}';
+		directoryTxt.text = 'Mod directory: "${Mods.currentModDirectory}"';
 
 		if (Controls.instance.ACCEPT)
 			play(sel);
