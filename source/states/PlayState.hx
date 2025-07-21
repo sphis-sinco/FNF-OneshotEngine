@@ -64,6 +64,8 @@ import crowplexus.hscript.Printer;
 **/
 class PlayState extends MusicBeatState
 {
+	public static var highestCombo:Int = 0;
+
 	public static var STRUM_X = 42;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
@@ -3526,6 +3528,7 @@ class PlayState extends MusicBeatState
 				combo++;
 				if (combo > 9999)
 					combo = 9999;
+				highestCombo = (combo >= highestCombo) ? combo : highestCombo;
 				popUpScore(note);
 			}
 			var gainHealth:Bool = true; // prevent health gain, *if* sustains are treated as a singular note
