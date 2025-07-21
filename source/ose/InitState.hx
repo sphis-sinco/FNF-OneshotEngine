@@ -14,7 +14,7 @@ class InitState extends FlxState
 	var songText:FlxText;
 	var diffText:FlxText;
 
-	var curDifficulty:Int = 2;
+	var curDifficulty:Int = -1;
 
 	private static var lastDifficultyName:String = Difficulty.getDefault();
 
@@ -254,10 +254,18 @@ class InitState extends FlxState
 
 		lastDifficultyName = Difficulty.getString(curDifficulty, false);
 		var displayDiff:String = Difficulty.getString(curDifficulty);
-		if (Difficulty.list.length > 1)
-			diffText.text = '< ' + displayDiff.toUpperCase() + ' >';
-		else
-			diffText.text = displayDiff.toUpperCase();
+
+		try
+		{
+			if (Difficulty.list.length > 1)
+				diffText.text = '< ' + displayDiff.toUpperCase() + ' >';
+			else
+				diffText.text = displayDiff.toUpperCase();
+		}
+		catch (e)
+		{
+			trace('huh: $e');
+		}
 
 		missingText.visible = false;
 	}

@@ -1,4 +1,5 @@
 # Unreleased
+- Added support for compiling to Hashlink
 - If there is only one song they don't play automatially anymore
 - Added Difficulty Selector to the Song Selector
 - Added "Add Camera Offset" event to the chart editor
