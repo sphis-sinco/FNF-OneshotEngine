@@ -1,5 +1,8 @@
 package ose;
 
+import backend.*;
+import states.*;
+
 class Results extends MusicBeatState
 {
 	public var ref:FlxSprite;
@@ -25,7 +28,7 @@ class Results extends MusicBeatState
 
 		var container = new FlxSprite();
 		container.loadGraphic(Paths.image('results/container'));
-		container.setPosition(0,0);
+		container.setPosition(0, -10);
 
 		character = new FlxSprite();
 		character.frames = Paths.getSparrowAtlas('results/$characterFileName');
@@ -42,10 +45,10 @@ class Results extends MusicBeatState
 		add(resultsText);
 
 		/**
-                PlayState.campaignScore = FlxG.random.int(0, 2400);
-		PlayState.campaignMisses = FlxG.random.int(0, 2400);
-		PlayState.highestCombo = FlxG.random.int(0, 2400);
-                **/
+					PlayState.campaignScore = FlxG.random.int(0, 2400);
+			PlayState.campaignMisses = FlxG.random.int(0, 2400);
+			PlayState.highestCombo = FlxG.random.int(0, 2400);
+		**/
 	}
 
 	public var characterFileName:String = '';
@@ -72,6 +75,33 @@ class Results extends MusicBeatState
 
 		resultsText.text = 'Score: ${Std.int(score)}' + '\n\n\nMisses: ${Std.int(misses)}' + '\n\n\nHighest Combo: ${Std.int(highestCombo)}';
 		resultsText.text = resultsText.text.toUpperCase();
+
+		if (controls.ACCEPT)
+		{
+			Mods.loadTopMod();
+			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
+
+			if (PlayState.isStoryMode)
+			{
+				MusicBeatState.switchState(new StoryMenuState());
+
+				// if ()
+				if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay'))
+				{
+					StoryMenuState.weekCompleted.set(WeekData.weeksList[PlayState.storyWeek], true);
+					Highscore.saveWeekScore(WeekData.getWeekFileName(), PlayState.campaignScore, PlayState.storyDifficulty);
+
+					FlxG.save.data.weekCompleted = StoryMenuState.weekCompleted;
+					FlxG.save.flush();
+				}
+				return;
+			}
+
+			trace('WENT BACK TO FREEPLAY??');
+
+			MusicBeatState.switchState(#if debug new FreeplayState() #else new ose.FinishedState() #end);
+		}
 	}
 
 	public function getCharacterFileName():String
