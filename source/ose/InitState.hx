@@ -28,53 +28,63 @@ class InitState extends FlxState
 
 	static var showOutdatedWarning:Bool = true;
 
+	public static var init:Bool = false;
+
+	public static var savedModDir:String = '';
+
 	override function create()
 	{
 		super.create();
 
+		if (savedModDir != '')
+			Mods.currentModDirectory = savedModDir;
+
 		trace('yo');
 
-		Difficulty.resetList();
-
-		if (FlxG.sound.music == null)
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-
-		ClientPrefs.loadPrefs();
-		Language.reloadPhrases();
-
-		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
+		if (!init)
 		{
-			FlxG.fullscreen = FlxG.save.data.fullscreen;
-			// trace('LOADED FULLSCREEN SETTING!!');
-		}
+			ClientPrefs.loadPrefs();
+			Language.reloadPhrases();
 
-		if (FlxG.save.data.weekCompleted != null)
-		{
-			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
-		}
-
-		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
-		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		missingText.scrollFactor.set();
-		missingText.visible = false;
-		add(missingText);
-
-		WeekData.reloadWeekFiles(false);
-
-		if (WeekData.weeksList.length < 1)
-		{
-			FlxTransitionableState.skipNextTransIn = true;
-			persistentUpdate = false;
-			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED\n\nPress ACCEPT or BACK to close the game", function()
+			if (FlxG.save.data != null && FlxG.save.data.fullscreen)
 			{
-				throw 'No weeks added';
-			}, function()
-			{
-				throw 'No weeks added';
-			}));
-			return;
-		}
+				FlxG.fullscreen = FlxG.save.data.fullscreen;
+				// trace('LOADED FULLSCREEN SETTING!!');
+			}
 
+			if (FlxG.save.data.weekCompleted != null)
+			{
+				StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
+			}
+
+			if (FlxG.save.data.flashing == null && !FlashingState.leftState)
+			{
+				FlxTransitionableState.skipNextTransIn = true;
+				FlxTransitionableState.skipNextTransOut = true;
+				MusicBeatState.switchState(new FlashingState());
+				return;
+			}
+
+			Difficulty.resetList();
+
+			WeekData.reloadWeekFiles(false);
+
+			if (WeekData.weeksList.length < 1)
+			{
+				FlxTransitionableState.skipNextTransIn = true;
+				persistentUpdate = false;
+				MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED\n\nPress ACCEPT or BACK to close the game", function()
+				{
+					throw 'No weeks added';
+				}, function()
+				{
+					throw 'No weeks added';
+				}));
+				return;
+			}
+
+			init = true;
+		}
 		for (i in 0...WeekData.weeksList.length)
 		{
 			if (FreeplayState.weekIsLocked(WeekData.weeksList[i]))
@@ -103,13 +113,29 @@ class InitState extends FlxState
 				{
 					songs.push(song[0]);
 					songWeeks.push(i);
+					#if MODS_ALLOWED
 					songsFolders.push((Mods.currentModDirectory != null) ? Mods.currentModDirectory : '');
+					#else
+					songsFolders.push((Mods.currentModDirectory != null) ? Mods.currentModDirectory : '');
+					#end
 				}
 			}
 		}
+		WeekData.setDirectoryFromWeek();
+
+		#if MODS_ALLOWED
 		Mods.loadTopMod();
+		#end
 
 		trace('Song list: $songs');
+		if (FlxG.sound.music == null)
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+
+		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
+		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		missingText.scrollFactor.set();
+		missingText.visible = false;
+		add(missingText);
 
 		#if debug
 		#if FREEPLAY
@@ -132,14 +158,6 @@ class InitState extends FlxState
 		continueUpdateLoop = false;
 		return;
 		#end
-
-		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
-		{
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			MusicBeatState.switchState(new FlashingState());
-			return;
-		}
 
 		#if CHECK_FOR_UPDATES
 		if (showOutdatedWarning && ClientPrefs.data.checkForUpdates && substates.OutdatedSubState.updateVersion != ose.Global.OSEV)
@@ -208,14 +226,20 @@ class InitState extends FlxState
 		if (sel > songs.length - 1)
 			sel = songs.length - 1;
 
+		#if MODS_ALLOWED
 		Mods.currentModDirectory = songsFolders[sel];
 
 		directoryTxt.text = 'Mod directory: "${Mods.currentModDirectory}"';
 		if (Mods.currentModDirectory == '')
 			directoryTxt.text = '';
+		#end
 
 		if (Controls.instance.ACCEPT)
+		{
+			savedModDir = Mods.currentModDirectory;
+			Difficulty.loadFromWeek();
 			play(sel);
+		}
 		#end
 	}
 
@@ -260,8 +284,9 @@ class InitState extends FlxState
 		@:privateAccess
 		if (PlayState._lastLoadedModDirectory != Mods.currentModDirectory)
 		{
-			trace('CHANGED MOD DIRECTORY, RELOADING STUFF');
+			PlayState._lastLoadedModDirectory = Mods.currentModDirectory;
 			Paths.freeGraphicsFromMemory();
+			Paths.clearStoredMemory();
 		}
 		LoadingState.prepareToSong();
 		LoadingState.loadAndSwitchState(new PlayState());
