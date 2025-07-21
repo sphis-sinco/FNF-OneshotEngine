@@ -10,6 +10,7 @@ import states.FreeplayState;
 class MasterEditorMenu extends MusicBeatState
 {
 	var options:Array<String> = [
+		'Song Selector',
 		'Chart Editor',
 		'Character Editor',
 		'Stage Editor',
@@ -105,6 +106,8 @@ class MasterEditorMenu extends MusicBeatState
 		if (controls.ACCEPT)
 		{
 			switch(options[curSelected]) {
+				case 'Song Selector':
+					MusicBeatState.switchState(new InitState());
 				case 'Chart Editor'://felt it would be cool maybe
 					LoadingState.loadAndSwitchState(new ChartingState(), false);
 				case 'Character Editor':
