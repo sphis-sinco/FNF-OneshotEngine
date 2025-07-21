@@ -222,6 +222,7 @@ class PlayState extends MusicBeatState
 	public static var deathCounter:Int = 0;
 
 	public var defaultCamZoom:Float = 1.05;
+	public var camZoom:Float = 1.05;
 
 	// how big to stretch the pixel art assets
 	public static var daPixelZoom:Float = 6;
@@ -538,8 +539,9 @@ class PlayState extends MusicBeatState
 		}
 		add(camFollow);
 
+		camZoom = defaultCamZoom;
 		FlxG.camera.follow(camFollow, LOCKON, 0);
-		FlxG.camera.zoom = defaultCamZoom;
+		FlxG.camera.zoom = camZoom;
 		FlxG.camera.snapToTarget();
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
@@ -1261,7 +1263,8 @@ class PlayState extends MusicBeatState
 
 		var tempScore:String;
 		if (!instakillOnMiss)
-			tempScore = Language.getPhrase('score_text', 'Score: {1} | Misses: {2} | Rating: {3}', [Std.string(songScore), Std.string(songMisses), Std.string(str)]);
+			tempScore = Language.getPhrase('score_text', 'Score: {1} | Misses: {2} | Rating: {3}',
+				[Std.string(songScore), Std.string(songMisses), Std.string(str)]);
 		else
 			tempScore = Language.getPhrase('score_text_instakill', 'Score: {1} | Rating: {2}', [Std.string(songScore), Std.string(str)]);
 		tempScore = Language.getPhrase('score_text', 'Score: {1} ', [Std.string(songScore)]);
@@ -1636,7 +1639,7 @@ class PlayState extends MusicBeatState
 
 	function eventEarlyTrigger(event:EventNote):Float
 	{
-		var returnedValue:Null<Float> = callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], true);
+		var returnedValue:Null<Float> = Std.parseFloat(callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], true));
 		if (returnedValue != null && returnedValue != 0)
 		{
 			return returnedValue;
@@ -1957,8 +1960,11 @@ class PlayState extends MusicBeatState
 
 		if (camZooming)
 		{
-			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, Math.exp(-elapsed * 3.125 * camZoomingDecay * playbackRate));
+			FlxG.camera.zoom = FlxMath.lerp(camZoom, FlxG.camera.zoom, Math.exp(-elapsed * 3.125 * camZoomingDecay * playbackRate));
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, Math.exp(-elapsed * 3.125 * camZoomingDecay * playbackRate));
+
+			// if (FlxG.camera.zoom == camZoom && camZooming && camZoom != defaultCamZoom)
+			// 	camZooming = false;
 		}
 
 		FlxG.watch.addQuick("secShit", curSection);
@@ -2314,7 +2320,24 @@ class PlayState extends MusicBeatState
 				}
 
 			case 'Zoom Camera':
-				defaultCamZoom = flValue1;
+				camZooming = true;
+				camZoomingMult = 1;
+				camZoomingDecay = 1;
+
+				if (flValue1 == null)
+				{
+					camZoom = defaultCamZoom;
+				}
+				else
+				{
+					camZoom = flValue1;
+					if (flValue2 == null)
+						camZoomingMult = 1;
+					else
+						camZoomingMult = flValue2;
+					trace(camZoomingMult);
+					camZoomingDecay = 1;
+				}
 
 			case 'Move Camera':
 				switch (value1.toLowerCase().trim())

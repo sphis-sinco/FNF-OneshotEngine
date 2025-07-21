@@ -78,7 +78,7 @@ class ChartingState extends MusicBeatState implements PsychUIEventHandler.PsychU
 		],
 		[
 			'Zoom Camera', 
-			"Sets the game zoom.\nValue1: New cam zoom value."
+			"Sets the game zoom.\nValue 1: New cam zoom value.\nValue 2: camZoomingMult."
 		],
 		[
 			'Add Camera Offset',
@@ -1420,7 +1420,8 @@ class ChartingState extends MusicBeatState implements PsychUIEventHandler.PsychU
 					else if(!holdingAlt && FlxG.mouse.y >= gridBg.y && FlxG.mouse.y < gridBg.y + gridBg.height) // Add note
 					{
 						var strumTime:Float = (diffY / GRID_SIZE * Conductor.stepCrochet / curZoom) + cachedSectionTimes[curSec];
-						if(noteData >= 0)
+						try {
+							if(noteData >= 0)
 						{
 							trace('Added note at time: $strumTime');
 							var didAdd:Bool = false;
@@ -1472,6 +1473,9 @@ class ChartingState extends MusicBeatState implements PsychUIEventHandler.PsychU
 
 							selectedNotes.push(eventAdded);
 							addUndoAction(ADD_NOTE, {events: [eventAdded]});
+						}
+						} catch(e) {
+							trace(e);
 						}
 						onSelectNote();
 						softReloadNotes();

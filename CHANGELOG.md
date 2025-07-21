@@ -4,7 +4,6 @@
 - If there is only one song they don't play automatially anymore
 - Added Difficulty Selector to the Song Selector
 - Added "Add Camera Offset" event to the chart editor
-- Added "Zoom Camera" event to the chart editor
 - Added "Move Camera" event to the chart editor
 - The outdated state sends you to the right URL now
 - The outdated check happens in the Song Select
