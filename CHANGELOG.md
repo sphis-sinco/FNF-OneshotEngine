@@ -1,3 +1,6 @@
+# Unreleased
+- Fixed position of the missing chart text
+
 # 1.0.3 (7/21/2025)
 - Pressing backspace in the game over screen no longer sends you to freeplay (in release builds)
 - The finished state text now says ", if you haven't already" at the end

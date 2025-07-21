@@ -8,7 +8,6 @@ using StringTools;
 
 class InitState extends FlxState
 {
-	var missingTextBG:FlxSprite;
 	var missingText:FlxText;
 
 	var songText:FlxText;
@@ -39,11 +38,6 @@ class InitState extends FlxState
 		{
 			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 		}
-
-		missingTextBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		missingTextBG.alpha = 0.6;
-		missingTextBG.visible = false;
-		add(missingTextBG);
 
 		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
 		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -194,9 +188,8 @@ class InitState extends FlxState
 				errorStr += '\n\n' + e.stack;
 
 			missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
-			missingText.screenCenter(Y);
+			missingText.y = 10;
 			missingText.visible = true;
-			missingTextBG.visible = true;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 
 			return;
