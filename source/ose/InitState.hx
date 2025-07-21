@@ -12,6 +12,11 @@ class InitState extends FlxState
 	var missingText:FlxText;
 
 	var songText:FlxText;
+	var diffText:FlxText;
+
+	var curDifficulty:Int = 2;
+
+	private static var lastDifficultyName:String = Difficulty.getDefault();
 
 	public static var songs:Array<String> = [];
 
@@ -21,6 +26,7 @@ class InitState extends FlxState
 	var directoryTxt:FlxText;
 
 	static var showOutdatedWarning:Bool = true;
+
 	override function create()
 	{
 		super.create();
@@ -143,11 +149,12 @@ class InitState extends FlxState
 		#else
 		songText = new FlxText(0, 0, 0, '', 64);
 		songText.screenCenter();
-		if (songs.length == 1)
-			play(0);
-		else
-			add(songText);
+		add(songText);
 		#end
+
+		curDifficulty = Math.round(Math.max(0, Difficulty.defaultList.indexOf(lastDifficultyName)));
+
+		changeDiff();
 	}
 
 	override function update(elapsed:Float)
@@ -162,6 +169,10 @@ class InitState extends FlxState
 			sel--;
 		if (Controls.instance.UI_RIGHT_R)
 			sel++;
+		if (Controls.instance.UI_UP_R)
+			changeDiff(-1);
+		if (Controls.instance.UI_DOWN_R)
+			changeDiff(1);
 		#if debug
 		if (Controls.instance.BACK)
 			MusicBeatState.switchState(new MasterEditorMenu());
@@ -188,7 +199,6 @@ class InitState extends FlxState
 	function play(id:Int = 0)
 	{
 		trace('PLAYSTATE SHITZ');
-		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
 
 		Difficulty.resetList();
 
@@ -236,5 +246,19 @@ class InitState extends FlxState
 		#if (MODS_ALLOWED && DISCORD_ALLOWED)
 		DiscordClient.loadModRPC();
 		#end
+	}
+
+	function changeDiff(change:Int = 0)
+	{
+		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, Difficulty.list.length - 1);
+
+		lastDifficultyName = Difficulty.getString(curDifficulty, false);
+		var displayDiff:String = Difficulty.getString(curDifficulty);
+		if (Difficulty.list.length > 1)
+			diffText.text = '< ' + displayDiff.toUpperCase() + ' >';
+		else
+			diffText.text = displayDiff.toUpperCase();
+
+		missingText.visible = false;
 	}
 }
