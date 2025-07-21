@@ -1,4 +1,5 @@
 # Unreleased
+- Fixed the top mod's songs being the only you can play
 - Fixed position of the missing chart text
 
 # 1.0.3 (7/21/2025)

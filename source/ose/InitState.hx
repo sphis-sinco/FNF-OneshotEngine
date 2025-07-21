@@ -15,6 +15,7 @@ class InitState extends FlxState
 	public static var songs:Array<String> = [];
 
 	var songWeeks:Array<Int> = [];
+	var songsFolders:Array<String> = [];
 
 	override function create()
 	{
@@ -89,6 +90,7 @@ class InitState extends FlxState
 				{
 					songs.push(song[0]);
 					songWeeks.push(i);
+					songsFolders.push((Mods.currentModDirectory != null) ? Mods.currentModDirectory : '');
 				}
 			}
 		}
@@ -147,6 +149,8 @@ class InitState extends FlxState
 			sel = 0;
 		if (sel > songs.length - 1)
 			sel = songs.length - 1;
+
+		Mods.currentModDirectory = songsFolders[sel];
 
 		if (Controls.instance.ACCEPT)
 			play(sel);
