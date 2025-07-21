@@ -1,5 +1,6 @@
 package ose;
 
+import haxe.macro.Compiler;
 import states.editors.MasterEditorMenu;
 import states.*;
 import backend.*;
@@ -122,7 +123,14 @@ class InitState extends FlxState
 		#if !NO_TITLE
 		MusicBeatState.switchState(new TitleState());
 		#end
+		return;
 		#end
+
+		if (Compiler.getDefine('results') == '1')
+		{
+			MusicBeatState.switchState(new Results());
+			return;
+		}
 
 		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
 		{
