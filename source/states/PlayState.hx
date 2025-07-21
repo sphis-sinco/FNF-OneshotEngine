@@ -1261,10 +1261,10 @@ class PlayState extends MusicBeatState
 
 		var tempScore:String;
 		if (!instakillOnMiss)
-			tempScore = Language.getPhrase('score_text', 'Score: {1} | Misses: {2} | Rating: {3}', [songScore, songMisses, str]);
+			tempScore = Language.getPhrase('score_text', 'Score: {1} | Misses: {2} | Rating: {3}', [Std.string(songScore), Std.string(songMisses), Std.string(str)]);
 		else
-			tempScore = Language.getPhrase('score_text_instakill', 'Score: {1} | Rating: {2}', [songScore, str]);
-		tempScore = Language.getPhrase('score_text', 'Score: {1} ', [songScore]);
+			tempScore = Language.getPhrase('score_text_instakill', 'Score: {1} | Rating: {2}', [Std.string(songScore), Std.string(str)]);
+		tempScore = Language.getPhrase('score_text', 'Score: {1} ', [Std.string(songScore)]);
 		scoreTxt.text = tempScore;
 	}
 
