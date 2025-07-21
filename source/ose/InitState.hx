@@ -140,17 +140,19 @@ class InitState extends FlxState
 		#if debug
 		#if FREEPLAY
 		MusicBeatState.switchState(new FreeplayState());
+		continueUpdateLoop = false;
 		return;
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
+		continueUpdateLoop = false;
 		return;
 		#end
 
 		#if !NO_TITLE
 		MusicBeatState.switchState(new TitleState());
-		#end
 		continueUpdateLoop = false;
 		return;
+		#end
 		#end
 
 		#if results
