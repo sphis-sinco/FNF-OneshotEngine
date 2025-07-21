@@ -14,6 +14,7 @@ class InitState extends FlxState
 	var songText:FlxText;
 
 	public static var songs:Array<String> = [];
+
 	var songWeeks:Array<Int> = [];
 
 	override function create()
@@ -123,7 +124,10 @@ class InitState extends FlxState
 		#else
 		songText = new FlxText(0, 0, 0, '', 64);
 		songText.screenCenter();
-		add(songText);
+		if (songs.length == 1)
+			play(0);
+		else
+			add(songText);
 		#end
 	}
 
