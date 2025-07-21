@@ -11,7 +11,7 @@ class InitState extends FlxState
 	var missingTextBG:FlxSprite;
 	var missingText:FlxText;
 	
-	var songs:Array<String> = [];
+	public static var songs:Array<String> = [];
 
 	override function create()
 	{
@@ -112,7 +112,7 @@ class InitState extends FlxState
 		trace('PLAYSTATE SHITZ');
 		var songName:String = songs[0];
 
-		if (songs.length >= 1)
+		if (songs.length > 1)
 			songName = songs[FlxG.random.int(0, songs.length - 1)];
 
 		final curDifficulty:Int = 2; // 0 - ez, 1 - norm, 2 - hard
