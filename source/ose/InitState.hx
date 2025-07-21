@@ -123,14 +123,15 @@ class InitState extends FlxState
 		#if !NO_TITLE
 		MusicBeatState.switchState(new TitleState());
 		#end
+		continueUpdateLoop = false;
 		return;
 		#end
 
-		if (Compiler.getDefine('results') == '1')
-		{
-			MusicBeatState.switchState(new Results());
-			return;
-		}
+		#if results
+		MusicBeatState.switchState(new Results());
+		continueUpdateLoop = false;
+		return;
+		#end
 
 		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
 		{
@@ -174,11 +175,16 @@ class InitState extends FlxState
 		changeDiff();
 	}
 
+	var continueUpdateLoop = true;
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
 		#if SONG_SELECTION
+		if (!continueUpdateLoop)
+			return;
+
 		songText.text = ((sel > 0) ? '/\\\n' : '_\n') + songs[sel] + ((sel < songs.length - 1) ? '\n\\/' : '\n_');
 
 		songText.screenCenter(X);

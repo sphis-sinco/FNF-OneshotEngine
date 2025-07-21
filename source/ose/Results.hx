@@ -71,7 +71,7 @@ class Results extends MusicBeatState
 		var ret:Dynamic = callOnScripts('getCharacterFileName', null, true);
 		if (ret != LuaUtils.Function_Stop)
 		{
-			if (ret != null)
+			if (ret != null && ret != LuaUtils.Function_Continue)
 				return '$ret';
 
 			return 'boyfriend_results';
