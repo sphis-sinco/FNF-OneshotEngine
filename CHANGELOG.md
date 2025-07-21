@@ -1,3 +1,6 @@
+# 1.0.2 (7/20/2025)
+- Replaced more Psych engine things with Oneshot engine
+
 # 1.0.1 (7/20/2025)
 - Re-enabled Lua and Hscript script files
 
